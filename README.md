@@ -4,6 +4,8 @@
 
 Avatar AI è un agente web conversazionale (Conversational AI Web Agent) basato su Large Language Models (LLM) che offre interazioni testuali, vocali e visive in tempo reale. Il sistema permette agli utenti di dialogare con avatar 3D dotati di personalità specifiche e contesti di conoscenza personalizzabili (RAG). Risolve il problema di fornire interfacce uomo-macchina più naturali e coinvolgenti, dimostrandosi utile per applicazioni didattiche, di supporto clienti e di intrattenimento.
 
+<img width="944" height="426" alt="Cattura" src="https://github.com/user-attachments/assets/4bbb469b-c562-452c-8f77-197a3531da35" />
+
 ## 📑 Indice
 - [🏗️ Architettura e Struttura](#️-architettura-e-struttura)
 - [📦 Prerequisiti e Dipendenze](#-prerequisiti-e-dipendenze)
