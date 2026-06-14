@@ -44,17 +44,3 @@ Il sistema si fonda su un'architettura monolitica client-server semplificata:
 ## 💡 Esempi Pratici
 - **Scenari didattici (Tino)**: L'utente seleziona l'avatar *Tino* per esplorare concetti di sviluppo Web o AI ricevendo risposte professionali e di natura tecnologica grazie al suo file RAG `tinorag.md`.
 - **Turismo Digitale (Aria)**: L'utente seleziona l'avatar *Aria*. Lei possiederà un background descritto in `ariarag.md` come "Guida locale di Bari". Si può quindi dialogare sullo street food pugliese o le bellezze cittadine, ottenendo risposte che verranno contestualizzate al volo.
-
-## ⚠️ Criticità o Limitazioni Trovate
-Analizzando il codice, la repository presenta alcune incongruenze importanti e falle da correggere prima della messa in produzione reale:
-1. **Problema di Sicurezza (Command Injection Vulnerability)**: Nel file `server.js`, all'endpoint `/tts`, il parametro di query string `voice` non è sanitizzato. Viene immesso nativamente nel comando bash: `python -m edge_tts --voice "${voice}"...`. A differenza della variabile `text` (trattata in `safeText`), la mancanza di validazione su `voice` espone a rischi di Shell Injection nel sistema host se modificata arbitrariamente dall'utente.
-2. **Dipendenze inutilizzate**: Il `package.json` elenca tra le dependencies `ws` (WebSockets), ma il protocollo socket non è importato o inizializzato in `server.js` (si usa polling HTTP per le API Proxy).
-3. **Incongruenze nel repository e naming incoerente**: Il file `package.json` definisce `"main": "replace.js"`, file totalmente assente nella repository. Lo script `"test"` definito non lancia alcuna procedura automatica di quality assurance. Il naming tra repository GitHub principale (`conversational-ai-web-agent`) e cartella applicativa (`avatar-ai`) risulta scollegato. Non era specificata correttamente o inclusa la licenza.
-4. **Debolezze strutturali e latenza lato backend**: Il TTS dipende da un child_process in Shell invocato tramite Node a ogni richiesta (`exec("python...")`), generando un file audio MP3 temporaneo su disco che poi viene letto. Questo crea pesante I/O sul filesystem, latenza ad ogni avvio dell'interprete Python e instabilità per traffico simultaneo.
-5. **Codice Ridondante (Frontend)**: Il file `avatar-standalone.html` unisce pesantemente oltre mille righe di codice per il Markup, CSS e Three.js in un monolite, contravvenendo a qualsiasi pattern modulare del frontend e rendendo ostica la manutenzione.
-
-## 🚀 Possibili Miglioramenti Futuri
-- **Refactoring Architetturale del TTS**: Implementare un microservizio FastAPI in Python dedicato unicamente al rendering audio on-the-fly su pipe stream diretti al network socket, rimuovendo la necessità dello spawn process bash con scrittura su disco (eliminando alla radice l'injection).
-- **Sanitizzazione Input Backend**: Aggiornare express per utilizzare middleware robusti per il filtraggio e controllo dei parametri (es. librerie Joi, express-validator).
-- **Modernizzazione del Frontend**: Scorporare il file monolitico in una toolchain Javascript solida (es. React o Vue.js, integrando react-three-fiber per la gestione procedurale del canvas).
-- **Containerizzazione Docker**: Rendere l'applicativo portatile fornendo un `Dockerfile` multienvironment per isolare i requisiti Python e Node.js nella stessa applicazione riducendo i conflitti di sistema e standardizzando la compilazione.
